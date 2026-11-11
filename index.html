@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+</style>
+<title>나의 두 번째 명함</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one narrow column, one screen per step; the result is a business card ("두 번째 명함") with the RIASEC hexagon beneath. */
+:root{
+  --bg:#f3f5f4; --surface:#ffffff; --ink:#18252b; --muted:#5b6b70; --line:#d6dedc;
+  --accent:#0d6b5f; --accent-soft:#dcefeb; --accent-ink:#ffffff; --mark:#c9892b;
+  --card:#fbfaf6; --card-line:#e4dfd2;
+  --f-display:"Gowun Batang","Nanum Myeongjo",serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181b; --surface:#192226; --ink:#e7eeec; --muted:#9aaaa8; --line:#2c393d;
+  --accent:#4fc1ad; --accent-soft:#1d3632; --accent-ink:#0d1a18; --mark:#e0a94f;
+  --card:#1e272a; --card-line:#33413f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11181b; --surface:#192226; --ink:#e7eeec; --muted:#9aaaa8; --line:#2c393d;
+  --accent:#4fc1ad; --accent-soft:#1d3632; --accent-ink:#0d1a18; --mark:#e0a94f;
+  --card:#1e272a; --card-line:#33413f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;text-wrap:balance;margin:0;line-height:1.3}
+h1{font-size:2.1rem}
+h2{font-size:1.45rem}
+p{margin:0}
+.eyebrow{font-size:.8rem;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+.btn{border:0;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:1.05rem;padding:14px 22px}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600;font-size:.95rem}
+.field input{font:inherit;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:.95rem;color:var(--muted)}
+.note b{color:var(--ink)}
+
+/* card */
+.card{background:var(--card);border:1px solid var(--card-line);border-radius:6px;padding:22px 22px 18px;
+  box-shadow:0 1px 0 var(--card-line),0 12px 28px -18px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:14px;position:relative}
+.card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-size:.8rem;color:var(--muted);letter-spacing:.04em}
+.card .code{font-family:var(--f-display);font-weight:700;color:var(--mark);font-size:1rem;letter-spacing:.12em}
+.card .job{font-family:var(--f-display);font-size:2rem;font-weight:700;line-height:1.2}
+.card .who{font-size:1rem}
+.card .what{font-size:.95rem;color:var(--muted);border-top:1px solid var(--card-line);padding-top:12px}
+.card .tag{position:absolute;top:-11px;left:18px;background:var(--mark);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.06em;padding:2px 8px;border-radius:3px}
+
+/* question */
+.progress{display:flex;align-items:center;gap:12px;font-size:.9rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.qtext{font-family:var(--f-display);font-size:1.5rem;line-height:1.45;min-height:5.5em;display:flex;align-items:center}
+.scale{display:flex;flex-direction:column;gap:8px}
+.scale button{display:flex;align-items:center;gap:12px;text-align:left;background:var(--surface);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:13px 16px;font-size:1.02rem}
+.scale button .dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:none}
+.scale button[data-v="1"] .dot,.scale button[data-v="6"] .dot{width:22px;height:22px}
+.scale button[data-v="2"] .dot,.scale button[data-v="5"] .dot{width:19px;height:19px}
+.scale button[data-v="3"] .dot,.scale button[data-v="4"] .dot{width:15px;height:15px}
+.scale button:hover{border-color:var(--accent)}
+.scale button.on{border-color:var(--accent);background:var(--accent-soft)}
+.scale button.on .dot{background:var(--accent);border-color:var(--accent)}
+.qnav{display:flex;justify-content:space-between;align-items:center}
+.link{background:none;border:0;color:var(--muted);padding:8px 0;text-decoration:underline;text-underline-offset:3px}
+
+/* result */
+.block{display:flex;flex-direction:column;gap:10px}
+.typehead{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 12px}
+.pill{font-size:.78rem;font-weight:700;letter-spacing:.04em;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.ability{background:var(--surface);border-left:4px solid var(--accent);border-radius:4px;padding:14px 16px}
+.ability .lbl{font-size:.8rem;color:var(--muted);font-weight:600;letter-spacing:.04em}
+.ability p{font-size:1.1rem;font-weight:600;margin-top:4px}
+.ability .why{font-size:.92rem;font-weight:400;color:var(--muted);margin-top:8px}
+.hexbox{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.hexbox svg{display:block;width:100%;height:auto;max-width:420px;margin:0 auto}
+.hexbox text{fill:var(--ink);font-family:var(--f-body)}
+.hexbox .sc{fill:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+.others{display:grid;grid-template-columns:1fr;gap:8px;margin:0;padding:0;list-style:none}
+.others li{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-width:0}
+.others b{font-family:var(--f-display);font-size:1.05rem}
+.others span{display:block;font-size:.92rem;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.fine{font-size:.82rem;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap" id="app">
+  <!-- intro -->
+  <section id="intro" class="wrap" style="padding:0">
+    <div class="block">
+      <span class="eyebrow">평생교육학교 · 1교시</span>
+      <h1>나의 두 번째 명함</h1>
+      <p>일할 때 어떤 순간에 힘이 나는지 21개 질문에 답하면, 당신의 능력이 쓰이는 의외의 직업을 명함으로 만들어 드려요.</p>
+    </div>
+    <div class="card" aria-label="결과 예시">
+      <span class="tag">예시</span>
+      <div class="top"><span>두 번째 명함</span><span class="code">R · I</span></div>
+      <div class="job">피아노 조율사</div>
+      <div class="who">원리 파는 기술자형 · 홍길동</div>
+      <div class="what">소리가 어긋난 원인을 짚어 내는 귀와 그걸 손으로 맞추는 끈기</div>
+    </div>
+    <div class="note"><b>여기서 '일'은</b> 직장 일뿐 아니라 집안일, 봉사, 모임 총무, 취미로 만드는 것까지, 무언가를 맡아서 해내는 모든 순간을 말해요. 정답은 없으니 떠오르는 대로 답해 주세요.</div>
+    <form id="startForm" class="block">
+      <div class="field">
+        <label for="nameInput">명함에 넣을 이름 (선택)</label>
+        <input id="nameInput" type="text" maxlength="12" placeholder="예: 김수민" autocomplete="off">
+      </div>
+      <button class="btn" type="submit">시작하기 · 약 3분</button>
+    </form>
+  </section>
+
+  <!-- question -->
+  <section id="quiz" class="wrap" style="padding:0" hidden>
+    <div class="progress"><span id="pText">1 / 21</span><div class="bar"><i id="pBar" style="width:0"></i></div></div>
+    <p class="qtext" id="qText"></p>
+    <div class="scale" id="scale" role="group" aria-label="응답"></div>
+    <div class="qnav">
+      <button class="link" id="backBtn" type="button">이전 질문</button>
+      <span class="fine">고르면 다음으로 넘어가요</span>
+    </div>
+  </section>
+
+  <!-- result -->
+  <section id="result" class="wrap" style="padding:0" hidden></section>
+</div>
+
+<script>
+const H = ["R","I","A","S","E","C"];
+const HK = {R:"현실",I:"탐구",A:"예술",S:"사회",E:"진취",C:"관습"};
+const LABELS = ["전혀 아니다","아니다","약간 아니다","약간 그렇다","그렇다","매우 그렇다"];
+const CONTRIB = [null,-1,-0.7,-0.3,0.3,0.7,1];
+const PURE_GAP = 12; // 기준 A (임시, 시뮬레이션 기준 순수 유형 약 35%)
+
+const Q = [
+ ["Q01","내 손으로 물건을 만들거나 고치는 일이 즐겁다.",{R:100}],
+ ["Q02","목공이나 뜨개질처럼 손으로 무언가를 만드는 취미에 마음이 간다.",{R:100,A:30}],
+ ["Q03","공구나 기계를 만지는 일은 되도록 다른 사람에게 맡긴다.",{R:-100}],
+ ["Q04","일이 꼬였을 때, 원인을 모른 채 그냥 넘어가면 찜찜하다.",{I:100}],
+ ["Q05","처음 보는 문제를 붙잡고 한참 고민하다 풀어냈을 때 가장 뿌듯하다.",{I:100}],
+ ["Q06","원리까지 알 필요는 없고, 하는 방법만 알면 충분하다.",{I:-70}],
+ ["Q07","음식 간이나 방 안 냄새가 평소와 조금만 달라도 바로 알아챈다.",{I:30,A:70}],
+ ["Q08","남들과 똑같은 방법으로 하는 게 마음이 편하다.",{A:-100}],
+ ["Q09","기능이 같아도 디자인이 마음에 안 들면 손이 잘 안 간다.",{A:100}],
+ ["Q10","일하다 옆 사람이 헤매고 있으면, 내 일을 잠시 멈추고서라도 알려 준다.",{S:100}],
+ ["Q11","내가 도운 사람이 잘 풀렸다는 소식을 들으면 내 일처럼 기쁘다.",{S:100}],
+ ["Q12","동료나 지인의 고민을 들어 주는 건 솔직히 좀 피곤하다.",{S:-100}],
+ ["Q13","모임에서 대표나 회장을 뽑을 때, 내가 해 보겠다고 나서는 편이다.",{E:100}],
+ ["Q14","모임에서 '이거 한번 해 보자'고 먼저 말을 꺼낼 때가 많다.",{E:100}],
+ ["Q15","누군가를 설득해야 하는 일은 생각만 해도 기운이 빠진다.",{E:-100}],
+ ["Q16","일을 시작하기 전에 순서를 적어 두어야 마음이 편하다.",{C:100}],
+ ["Q17","영수증·서류·사진을 날짜별로 정리해 두면 속이 시원하다.",{C:100}],
+ ["Q18","정해진 절차보다 그때그때 상황 봐서 하는 게 편하다.",{C:-100}],
+ ["Q19","내가 손으로 고치거나 만든 것이 누군가의 하루를 편하게 해 줄 때 가장 보람차다.",{},"RS"],
+ ["Q20","파고들어 알아낸 것을 사람들 앞에서 설득력 있게 풀어낼 때 가장 신이 난다.",{},"IE"],
+ ["Q21","정해진 규칙이나 틀이 있을 때 오히려 더 기발한 아이디어가 떠오른다.",{},"AC"]
+].map(([id,text,w,gate])=>({id,text,w,gate}));
+
+const TYPES = {
+ R:["손끝 장인형","말보다 손이 먼저인 사람이에요. 직접 만지고 고쳐 낸 결과물이 가장 큰 보람이죠."],
+ RI:["원리 파는 기술자형","고장 나면 원리부터 궁금해지고, 알아낸 걸 손으로 확인해야 직성이 풀려요."],
+ I:["끝까지 캐는 탐구자형","남들이 '원래 그래'하고 넘어가는 데서 멈춰 서는 사람이에요. 그 집요함이 무기예요."],
+ IA:["감각 탐구자형","작은 맛·소리·색의 차이를 그냥 넘기지 못해요. 예민함과 분석력이 같이 있는 드문 조합이에요."],
+ A:["나만의 표현가형","정해진 답보다 '나라면 이렇게'가 먼저 떠올라요. 만족의 기준이 높은 것도 그래서예요."],
+ AS:["마음 닿는 이야기꾼형","같은 이야기도 당신이 하면 사람들이 귀 기울여요. 표현이 사람을 향해 있어요."],
+ S:["곁을 지키는 돌봄형","도움이 필요한 사람이 먼저 눈에 들어와요. 그 따뜻함은 생각보다 많은 일에서 핵심 능력이에요."],
+ SE:["사람 모으는 길잡이형","모임이 굴러가는 건 대개 당신 덕분이에요. 챙기면서 이끄는 사람이죠."],
+ E:["판을 여는 개척자형","'한번 해 보자'를 먼저 말하는 사람이에요. 일을 시작하게 만드는 힘이 있어요."],
+ EC:["판을 굴리는 운영자형","아이디어보다 '그래서 언제, 얼마로?'를 챙기는 사람이에요. 일이 실제로 되게 만들어요."],
+ C:["빈틈없는 정리가형","순서와 기준이 서야 마음이 놓여요. 남들이 놓친 작은 틀림이 당신 눈에는 보여요."],
+ CR:["규칙 속 손기술형","대충은 없어요. 기준에 맞게 손으로 정확히 해내는 데서 자부심을 느껴요."],
+ "R/S":["손으로 돕는 양면형","보통은 같이 나오기 어려운 두 성향이 함께 있어요. 손으로 사람을 돕는 일에서 둘 다 빛나요."],
+ "I/E":["파고들고 설득하는 양면형","연구실 같은 집요함과 무대 같은 설득력이 한 사람 안에 있어요. 드문 조합이에요."],
+ "A/C":["규칙 안의 창작가형","틀 안에서 더 창의적이 되는 사람이에요. 제약이 오히려 재료가 돼요."]
+};
+
+// [결과 코드, 조건(유형 글자 또는 * = 그 외), 직업, 하는 일, 쓰이는 능력]
+const JOBS = [
+ ["R","I","항공기 정비사","비행기 엔진과 기체를 점검·수리해 매 비행의 안전을 책임진다","복잡한 기계의 원리를 이해하고 손으로 확인하는 힘"],
+ ["R","C","클래식카 복원가","오래된 자동차를 분해하고 원래 규격대로 되살려 다시 달리게 한다","정해진 규격을 손으로 정확히 재현해 내는 꼼꼼함"],
+ ["R","*","원목 가구 제작자","공방에서 나무를 골라 주문한 사람만을 위한 가구를 만든다","손으로 완성품을 끝까지 만들어 내는 힘"],
+ ["RI","A","피아노 조율사","현의 장력을 미세하게 맞춰 악기의 음정과 음색을 바로잡는다","소리가 어긋난 원인을 짚어 내는 귀와 그걸 손으로 맞추는 끈기"],
+ ["RI","S","청능사 (보청기 전문가)","청력을 검사하고 보청기를 귀에 맞게 조절해 준다","검사로 원인을 찾아내는 머리, 기기를 다루는 손, 상대의 불편을 살피는 마음"],
+ ["RI","E","커피 로스터","생두의 특성에 맞춰 볶는 온도·시간을 설계하고 원두를 브랜드로 내놓는다","실험하며 맛을 찾아내는 탐구심과 그걸 팔 줄 아는 감각"],
+ ["RI","C","시계 수리원","기계식 시계를 분해·세척·조립해 오차를 잡는다","구조를 이해하고 작은 부품을 순서대로 다루는 정밀함"],
+ ["I","R","수중 고고학자","바다 밑에 가라앉은 난파선과 유물을 조사해 옛 사람들의 삶을 밝힌다","낯선 현장에 직접 뛰어들어 답을 찾는 탐구심"],
+ ["I","A","고전 번역가","한문 고문헌을 해독해 오늘의 말로 옮긴다","옛 문장 속 뜻을 캐내는 끈기와 언어 감각"],
+ ["I","*","천문대 연구원","밤하늘을 관측하고 별의 빛을 분석해 우주의 원리를 밝힌다","답이 나올 때까지 기다리며 파고드는 집요함"],
+ ["IA","R","조향사","수백 가지 원료를 배합해 새로운 향을 만든다","미묘한 차이를 구별하는 감각과 실험을 반복하는 탐구심"],
+ ["IA","S","다큐멘터리 PD","한 주제를 오래 취재해 사람들의 이야기를 영상으로 엮는다","남들이 지나치는 이야기를 알아보는 눈과 사람에게 다가가는 공감"],
+ ["IA","E","소믈리에","와인을 맛보고 분석해 음식과 손님에 맞게 추천한다","맛과 향을 말로 풀어내는 감각, 상대 취향을 읽는 센스"],
+ ["IA","C","과학 일러스트레이터","동식물·인체·유물을 정확하게 그림으로 기록한다","보이는 그대로를 정확히 옮기는 관찰력과 손"],
+ ["A","I","폴리 아티스트","영화 속 발소리·문소리 같은 효과음을 직접 만든다","소리를 듣고 재현해 내는 감각과 상상력"],
+ ["A","S","성우","목소리 하나로 인물과 감정을 연기한다","감정을 목소리에 담아 전하는 표현력"],
+ ["A","*","영화 컬러리스트","촬영이 끝난 영상의 색감을 다듬어 장면의 분위기를 완성한다","같은 장면도 내 색으로 다르게 보이게 만드는 감각"],
+ ["AS","R","인형극 배우","인형을 만들고 움직여 아이들 앞에서 이야기를 연기한다","손재주와 표현력, 관객 반응을 읽는 감각"],
+ ["AS","I","미술치료사","그림 활동으로 마음을 표현하게 돕고 그 의미를 읽어 낸다","표현 속 마음을 읽어 내는 섬세함"],
+ ["AS","E","북 큐레이터","사람의 상황과 취향을 듣고 그 사람에게 맞는 책을 골라 준다","사람을 읽는 눈과 이야기를 골라 권하는 감각"],
+ ["AS","C","자서전 대필 작가","다른 사람의 인생을 인터뷰해 한 권의 책으로 정리한다","남의 이야기를 끝까지 들어 주는 귀와 이야기를 엮는 구성력"],
+ ["S","A","도슨트","전시장에서 작품 이야기를 관람객 눈높이로 들려준다","상대가 알아듣게 풀어 주는 배려와 이야기 솜씨"],
+ ["S","E","호텔 컨시어지","투숙객의 예약·안내·부탁을 해결하는 호텔의 해결사","상대가 말하기 전에 필요한 걸 알아채는 눈치와 해결력"],
+ ["S","*","수어 통역사","듣지 못하는 사람과 듣는 사람 사이에서 손으로 말을 잇는다","상대의 마음까지 정확하게 전하려는 배려와 집중력"],
+ ["SE","R","산악 트레킹 가이드","험한 산길에서 일행의 컨디션을 살피며 안전하게 이끈다","몸으로 익힌 현장 감각과 사람들을 챙기는 리더십"],
+ ["SE","I","스포츠 멘탈 코치","선수의 긴장과 슬럼프를 분석하고 경기에서 제 기량을 내도록 이끈다","사람의 마음을 읽는 눈과 용기를 불어넣는 힘"],
+ ["SE","A","웨딩 사회자","처음 보는 두 집안 사람들을 한 시간 만에 하나의 분위기로 묶는다","현장을 읽는 눈치와 말로 사람들을 이끄는 힘"],
+ ["SE","C","장례지도사","장례 절차 전체를 이끌며 유족 곁을 지킨다","절차를 이끌며 슬픈 사람 곁을 흔들림 없이 지키는 침착함"],
+ ["E","S","헤드헌터","기업에 맞는 인재를 찾아 설득하고 연결한다","사람을 알아보는 눈과 마음을 움직이는 말"],
+ ["E","C","미술품 경매사","경매 현장에서 응찰을 진행하며 작품의 낙찰가를 이끌어 낸다","현장을 장악하는 진행력과 절차를 지키는 침착함"],
+ ["E","*","쇼호스트","방송에서 제품의 매력을 짧은 시간에 전달해 판다","무대에서 빛나는 설득력과 순발력"],
+ ["EC","R","정리수납 컨설턴트","집과 사무실 공간을 진단하고 정리 체계를 만들어 준다","어수선한 공간을 직접 정리하고, 의뢰부터 마무리까지 일을 굴리는 추진력"],
+ ["EC","I","손해사정사","사고 원인과 피해 규모를 조사해 보험금을 산정한다","사실을 따져 묻는 꼼꼼함과 협상력"],
+ ["EC","A","축제 기획자","지역 축제의 콘셉트부터 예산·운영까지 판을 짠다","아이디어를 실제 일정과 예산으로 굴리는 추진력"],
+ ["EC","S","웨딩플래너","예식 준비 전체를 일정·예산에 맞춰 조율한다","여러 사람 요구를 동시에 챙기는 조율력"],
+ ["C","E","의전 전문가","행사·방문에서 자리 배치와 순서·예우를 빈틈없이 챙긴다","절차를 지키며 대외 관계를 매끄럽게 하는 감각"],
+ ["C","R","기록물관리사","기관의 문서·사진·자료를 분류해 오래 보존한다","흩어진 것을 체계로 묶는 정리력"],
+ ["C","*","교정교열가","출판 전 원고의 오탈자와 문장을 바로잡는다","한 글자 차이로 뜻이 바뀌는 걸 놓치지 않는 집중력"],
+ ["CR","I","열쇠 기술자","자물쇠 구조를 이해하고 잠긴 문을 열거나 보안 장치를 설치한다","구조를 꿰뚫어 보는 눈과 손끝 감각"],
+ ["CR","A","고서 수선가","낡고 찢어진 책과 문서를 원형대로 수선한다","원래 모습을 지키는 섬세함과 미적 감각"],
+ ["CR","S","소방시설 점검원","건물 소방 설비를 기준에 따라 점검해 사람들의 안전을 지킨다","정해진 기준을 빠짐없이 지키는 책임감"],
+ ["CR","E","명품 감정사","가방·시계 등의 바느질·소재·각인을 살펴 진품과 가품을 가려낸다","손끝과 눈으로 기준을 적용하는 정확성과 거래 감각"],
+ ["R/S","R","보조공학사","장애인·어르신에게 맞는 휠체어·보조기기를 맞추고 고쳐 준다","손기술로 사람의 일상을 돕는 마음"],
+ ["R/S","S","원예치료사","식물을 기르고 가꾸는 활동으로 사람의 몸과 마음 회복을 돕는다","손으로 하는 활동을 통해 사람을 돌보는 다정함"],
+ ["I/E","I","기술거래사","연구실 기술의 가치를 평가해 기업과 거래를 성사시킨다","원리를 이해하는 머리와 가치를 파는 협상력"],
+ ["I/E","E","탐사 기자","숨은 사실을 끈질기게 캐내 세상에 알린다","진실을 파는 집요함과 밀어붙이는 용기"],
+ ["A/C","A","서체 디자이너","수천 자의 한글 글자를 하나의 규칙으로 디자인한다","창작과 일관성을 동시에 지키는 감각"],
+ ["A/C","C","퍼즐 출제자","규칙이 맞물리는 퍼즐과 문제를 설계한다","엄격한 규칙 속에서 재미를 만드는 머리"]
+].map(([code,cond,name,what,ability])=>({code,cond,name,what,ability}));
+
+const PAIRS = ["RI","IA","AS","SE","EC","CR"];
+
+/* ---------- scoring ---------- */
+function scoreTypes(ans){
+  const s={};
+  for(const t of H){
+    let tot=0,max=0;
+    for(const q of Q){ const w=q.w[t]; if(!w) continue; max+=Math.abs(w); if(ans[q.id]) tot+=CONTRIB[ans[q.id]]*w; }
+    s[t]=Math.max(0,Math.min(100,50+50*tot/max));
+  }
+  return s;
+}
+const idx=t=>H.indexOf(t);
+function dist(a,b){const d=Math.abs(idx(a)-idx(b));return Math.min(d,6-d);}
+function neighbors(t){return [H[(idx(t)+5)%6],H[(idx(t)+1)%6]];}
+function pairCode(a,b){return PAIRS.find(p=>p.includes(a)&&p.includes(b));}
+
+function judge(ans){
+  const s=scoreTypes(ans);
+  const order=[...H].sort((a,b)=>s[b]-s[a]||idx(a)-idx(b));
+  const [t1,t2]=order;
+  let code,cond,kind;
+  if(s[t1]-s[t2]>=PURE_GAP){
+    kind="pure"; code=t1; cond=neighbors(t1).includes(t2)?t2:"*";
+  } else {
+    let partner=t2;
+    if(dist(t1,t2)===3){
+      const g=Q.find(q=>q.gate&&q.gate.includes(t1)&&q.gate.includes(t2));
+      if(ans[g.id]>=4){ kind="special"; code=g.gate[0]+"/"+g.gate[1]; cond=t1; }
+    }
+    if(!kind){
+      if(dist(t1,t2)!==1){ const [n1,n2]=neighbors(t1); partner = s[n1]>=s[n2]?n1:n2; }
+      kind="pair"; code=pairCode(t1,partner);
+      cond=order.find(t=>!code.includes(t));
+    }
+  }
+  const job=JOBS.find(j=>j.code===code&&j.cond===cond)||JOBS.find(j=>j.code===code);
+  return {s,order,code,kind,job};
+}
+
+/* evidence: the answer that most supports the top type */
+function evidence(ans,t){
+  let best=null;
+  for(const q of Q){ const w=q.w[t]; if(!w||!ans[q.id]) continue;
+    const v=CONTRIB[ans[q.id]]*Math.sign(w)*Math.abs(w);
+    if(v>0 && (!best||v>best.v)) best={q,v,a:ans[q.id]}; }
+  return best;
+}
+
+/* ---------- state ---------- */
+let state={step:"intro",name:"",order:[],i:0,ans:{}};
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+const $=id=>document.getElementById(id);
+function show(step){
+  state.step=step;
+  $("intro").hidden=step!=="intro"; $("quiz").hidden=step!=="quiz"; $("result").hidden=step!=="result";
+  window.scrollTo({top:0});
+}
+
+$("startForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  state.name=$("nameInput").value.trim();
+  state.order=shuffle(Q.map(q=>q.id)); state.i=0; state.ans={};
+  show("quiz"); renderQ();
+});
+
+const scaleEl=$("scale");
+LABELS.forEach((l,k)=>{
+  const b=document.createElement("button"); b.type="button"; b.dataset.v=k+1;
+  b.innerHTML=`<span class="dot" aria-hidden="true"></span><span>${l}</span>`;
+  b.addEventListener("click",()=>answer(k+1));
+  scaleEl.appendChild(b);
+});
+let lock=false;
+function renderQ(){
+  const id=state.order[state.i], q=Q.find(x=>x.id===id), n=Q.length;
+  $("qText").textContent=q.text;
+  $("pText").textContent=`${state.i+1} / ${n}`;
+  $("pBar").style.width=(state.i/n*100)+"%";
+  [...scaleEl.children].forEach(b=>b.classList.toggle("on",+b.dataset.v===state.ans[id]));
+  $("backBtn").style.visibility=state.i===0?"hidden":"visible";
+}
+function answer(v){
+  if(lock) return; lock=true;
+  const id=state.order[state.i]; state.ans[id]=v;
+  [...scaleEl.children].forEach(b=>b.classList.toggle("on",+b.dataset.v===v));
+  setTimeout(()=>{ lock=false;
+    if(state.i<Q.length-1){state.i++;renderQ();} else {renderResult();show("result");}
+  },220);
+}
+$("backBtn").addEventListener("click",()=>{ if(state.i>0){state.i--;renderQ();} });
+
+/* ---------- result ---------- */
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function hexSVG(s){
+  const cx=160,cy=150,R=100, pt=(i,r)=>{const a=-Math.PI/2+i*Math.PI/3;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];};
+  let g="";
+  [25,50,75,100].forEach(v=>{g+=`<polygon points="${H.map((_,i)=>pt(i,R*v/100).join(",")).join(" ")}" fill="none" stroke="var(--line)" stroke-width="1"/>`;});
+  H.forEach((_,i)=>{const [x,y]=pt(i,R);g+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`;});
+  g+=`<polygon points="${H.map((t,i)=>pt(i,R*s[t]/100).join(",")).join(" ")}" fill="var(--accent)" fill-opacity=".22" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>`;
+  H.forEach((t,i)=>{const [x,y]=pt(i,R*s[t]/100);g+=`<circle cx="${x}" cy="${y}" r="4" fill="var(--accent)"/>`;});
+  H.forEach((t,i)=>{const [x,y]=pt(i,R+26);
+    g+=`<text x="${x}" y="${y-2}" text-anchor="middle" font-size="14" font-weight="600">${HK[t]}</text><text class="sc" x="${x}" y="${y+14}" text-anchor="middle">${Math.round(s[t])}</text>`;});
+  return `<svg viewBox="0 0 320 300" role="img" aria-label="여섯 유형 점수 육각형">${g}</svg>`;
+}
+function renderResult(){
+  const r=judge(state.ans), T=TYPES[r.code], t1=r.order[0];
+  const ev=evidence(state.ans,t1);
+  const kindPill={pure:"한 가지 성향이 뚜렷해요",pair:"이웃한 두 성향이 함께 강해요",special:"보기 드문 양면형이에요"}[r.kind];
+  const same=JOBS.filter(j=>j.code===r.code&&j!==r.job);
+  const name=state.name?esc(state.name):"";
+  $("result").innerHTML=`
+    <div class="block"><span class="eyebrow">${name?name+"님의 ":""}결과</span><h2>당신의 능력이 쓰이는 의외의 직업</h2></div>
+    <div class="card">
+      <div class="top"><span>두 번째 명함</span><span class="code">${esc(r.code.includes("/")?r.code.replace("/"," ↔ "):r.code.split("").join(" · "))}</span></div>
+      <div class="job">${esc(r.job.name)}</div>
+      <div class="who">${esc(T[0])}${name?" · "+name:""}</div>
+      <div class="what">${esc(r.job.what)}</div>
+    </div>
+    <div class="block">
+      <div class="typehead"><h3>${esc(T[0])}</h3><span class="pill">${kindPill}</span></div>
+      <p>${esc(T[1])}</p>
+    </div>
+    <div class="ability">
+      <span class="lbl">이 직업에 쓰이는 당신의 능력</span>
+      <p>${esc(r.job.ability)}</p>
+      ${ev?`<p class="why">‘${esc(ev.q.text)}’에 <b>${LABELS[ev.a-1]}</b>고 답하셨어요.</p>`:""}
+    </div>
+    <div class="block">
+      <h3>여섯 가지 성향</h3>
+      <div class="hexbox">${hexSVG(r.s)}</div>
+      <p class="fine">홀랜드의 직업 흥미 육각형 순서예요. 이웃한 성향은 함께 나타나기 쉽고, 마주 보는 성향은 함께 나타나기 어려워요.</p>
+    </div>
+    ${same.length?`<div class="block"><h3>같은 성향이 쓰이는 다른 직업</h3><ul class="others">${same.map(j=>`<li><b>${esc(j.name)}</b><span>${esc(j.what)}</span></li>`).join("")}</ul></div>`:""}
+    <div class="actions"><button class="btn" type="button" id="againBtn">다시 해 보기</button></div>
+    <p class="fine">발표용 시제품이에요. 판정 기준값은 임시이고, 예비 응답을 받아 조정할 예정이에요.</p>`;
+  $("againBtn").addEventListener("click",()=>{ $("nameInput").value=state.name; show("intro"); });
+}
+
+/* keep in-progress answers across a republish */
+window.claude?.hot?.snapshot?.(()=>state);
+const boot=(d)=>{ if(d&&d.step&&d.order&&d.order.length){ state=d; $("nameInput").value=state.name||"";
+  if(state.step==="quiz"){show("quiz");renderQ();} else if(state.step==="result"){renderResult();show("result");} } };
+window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
+</script>
+
+</body>
+</html>
